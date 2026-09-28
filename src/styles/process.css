@@ -1,0 +1,84 @@
+/* Estrutura: linhas-guia horizontais muito apagadas e uma coluna de luz na
+   altura da linha do tempo — o fundo acompanha a ideia de etapas conectadas. */
+.process {
+  background-image:
+    radial-gradient(34% 70% at 6% 38%, rgba(201, 162, 75, 0.045), transparent 72%),
+    linear-gradient(180deg,
+      transparent 0%,
+      transparent 23.8%, rgba(246, 243, 236, 0.022) 24%, transparent 24.2%,
+      transparent 47.8%, rgba(246, 243, 236, 0.018) 48%, transparent 48.25%,
+      transparent 71.8%, rgba(246, 243, 236, 0.014) 72%, transparent 72.3%,
+      transparent 100%),
+    linear-gradient(180deg, rgba(246, 243, 236, 0.018), transparent 28%);
+}
+
+.process__flow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.process__step {
+  position: relative;
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-md) 0;
+}
+
+.process__marker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+}
+
+.process__dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--color-gold);
+  box-shadow: 0 0 12px rgba(201, 162, 75, 0.6);
+  z-index: 1;
+}
+
+.process__line {
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(180deg, var(--color-gold-dim), var(--color-border));
+  margin-top: 4px;
+}
+
+.process__step:last-child .process__line { display: none; }
+
+.process__content {
+  padding-bottom: var(--space-md);
+}
+
+.process__number {
+  font-size: var(--fs-xs);
+  color: var(--color-text-faint);
+  letter-spacing: 0.1em;
+}
+
+.process__content h3 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  margin: 0.25rem 0;
+}
+
+.process__content p {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  max-width: 48ch;
+}
+
+/* Mobile: sem as linhas-guia, mantendo a coluna de luz. */
+@media (max-width: 768px) {
+  .process {
+    background-image:
+      radial-gradient(60% 60% at 4% 30%, rgba(201, 162, 75, 0.04), transparent 72%),
+      linear-gradient(180deg, rgba(246, 243, 236, 0.016), transparent 30%);
+  }
+}

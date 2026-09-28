@@ -1,0 +1,28 @@
+/* Fundo de contraste: plano claro no alto, sombra profunda na base — o miolo
+   fica reservado para destacar os futuros projetos. */
+.projects {
+  background-image:
+    radial-gradient(70% 62% at 50% -14%, rgba(246, 243, 236, 0.032), transparent 62%),
+    radial-gradient(95% 85% at 50% 118%, rgba(0, 0, 0, 0.38), transparent 62%),
+    linear-gradient(180deg, rgba(246, 243, 236, 0.018), transparent 30%);
+}
+
+.projects__list {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.projects__empty {
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-2xl) var(--space-md);
+  text-align: center;
+  color: var(--color-text-faint);
+}
+
+/* Mobile: mantém só o plano de luz do alto. */
+@media (max-width: 768px) {
+  .projects {
+    background-image:
+      radial-gradient(95% 65% at 50% -14%, rgba(246, 243, 236, 0.028), transparent 66%);
+  }
+}

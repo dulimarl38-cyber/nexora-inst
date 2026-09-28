@@ -1,0 +1,107 @@
+.solutions {
+  background: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  /* Composição técnica: luz fria entrando por cima e um acento quente no canto,
+     sobre o plano mais claro da seção. */
+  background-image:
+    radial-gradient(60% 55% at 88% 0%, rgba(201, 162, 75, 0.06), transparent 68%),
+    radial-gradient(80% 60% at 12% -6%, rgba(246, 243, 236, 0.025), transparent 64%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 30%);
+}
+
+.solutions__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--color-border);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.solutions__card {
+  position: relative;
+  grid-column: span 3;
+  /* Base opaca para TODOS os cards. O `background` (shorthand) que o card 01
+     usava zerava a cor de fundo, deixando a cor da grade (#26262b) aparecer por
+     baixo do gradiente e engolindo os separadores de 1px entre os cards. */
+  background-color: var(--color-bg-alt);
+  padding: var(--space-lg);
+  transition: background 0.35s var(--ease);
+}
+
+/* Apenas a disposição: o primeiro card continua ocupando a linha inteira. */
+.solutions__card:first-child {
+  grid-column: span 6;
+}
+
+/* O brilho dourado do card 01 vive em duas camadas sobrepostas, em vez de no
+   `background` do próprio card. Motivo: `transition` não interpola
+   `background-image` — o gradiente saltaria de 0.08 para 0.05 num único quadro
+   e o card 01 "piscaria" em vez de reagir. Animando `opacity`, os 5 cards fazem
+   a mesma transição suave de 0.35s. */
+.solutions__card::before,
+.solutions__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+
+/* Camada 1 — o gradiente dourado que o card 01 já exibia em repouso. */
+.solutions__card::before {
+  background-image: linear-gradient(135deg, rgba(201, 162, 75, 0.08), transparent);
+  opacity: 1;
+}
+
+/* Camada 2 — o tom dourado chapado que aparece ao interagir. */
+.solutions__card::after {
+  background-color: rgba(201, 162, 75, 0.05);
+  opacity: 0;
+}
+
+/* O conteúdo fica acima das camadas, mantendo texto e contraste intactos. */
+.solutions__card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.solutions__card:hover::before { opacity: 0; }
+.solutions__card:hover::after  { opacity: 1; }
+
+.solutions__index {
+  font-size: var(--fs-xs);
+  color: var(--color-gold);
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.solutions__card h3 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.solutions__card p {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  max-width: 42ch;
+}
+
+@media (max-width: 900px) {
+  .solutions__grid { grid-template-columns: 1fr; }
+  .solutions__card,
+  .solutions__card:first-child { grid-column: span 1; }
+}
+
+/* Mobile: fica só o acento quente do canto. */
+@media (max-width: 768px) {
+  .solutions {
+    background-image:
+      radial-gradient(85% 60% at 80% 0%, rgba(201, 162, 75, 0.05), transparent 70%);
+  }
+}

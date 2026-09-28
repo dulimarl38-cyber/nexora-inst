@@ -1,0 +1,37 @@
+/* Identidade visual da Nexora (logo). Substitui o antigo header/navbar.
+   Sem fundo, sem borda e sem backdrop-filter: essas propriedades existiam
+   apenas para sustentar a barra de navegação, que foi removida. O que sobra
+   é somente a grade que alinha a logo ao restante do conteúdo — não há uma
+   "barra vazia" ocupando espaço. */
+.brand {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  /* A área da marca é transparente: não bloqueia cliques no conteúdo
+     (botões da Hero) que passa por baixo dela. Só a logo recebe ponteiro. */
+  pointer-events: none;
+}
+
+.brand__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 1.35rem var(--space-md);
+  display: flex;
+  align-items: center;
+}
+
+.brand__img {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  /* Mesma altura do navbar anterior, preservando a escala do símbolo
+     na animação de carregamento. */
+  .brand__img { height: 46px; }
+}

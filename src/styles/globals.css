@@ -1,0 +1,382 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Navegação por âncora é a navegação principal do site (botões da Hero).
+   Quem pede movimento reduzido perde a suavização, não o destino: o salto
+   continua levando à seção correta, só que instantâneo. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---------- Ambiente global de fundo ----------
+   Camada fixa, fora do fluxo: é a mesma luz base para o site inteiro.
+   Fica atrás de todo o conteúdo (z-index -1) e por cima da cor do body. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(120% 85% at 78% -12%, rgba(201, 162, 75, 0.05), transparent 62%),
+    radial-gradient(95% 70% at 8% -8%, rgba(246, 243, 236, 0.03), transparent 64%),
+    linear-gradient(180deg, rgba(246, 243, 236, 0.012), transparent 30%);
+}
+
+@media (max-width: 768px) {
+  body::before {
+    background-image:
+      radial-gradient(140% 60% at 50% -10%, rgba(201, 162, 75, 0.045), transparent 68%);
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+img { max-width: 100%; display: block; }
+
+h1, h2, h3, h4, p { margin: 0; }
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+/* ---------- Layout utilities ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+section {
+  position: relative;
+  padding: var(--space-2xl) 0;
+}
+
+/* ---------- Section title ---------- */
+
+.section-title {
+  max-width: 640px;
+  margin-bottom: var(--space-xl);
+}
+
+.section-title__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-soft);
+  margin-bottom: var(--space-sm);
+}
+
+.section-title__eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--color-gold);
+}
+
+.section-title__title {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.section-title__description {
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: var(--fs-lg);
+  line-height: 1.6;
+}
+
+/* ---------- Buttons ----------
+   Estados: normal (idêntico ao visual aprovado) → hover (elevação curta) →
+   active (microcompressão) → focus-visible (foco de teclado).
+   Nenhum Javascript: `:active` é liberado pelo próprio navegador no
+   pointerup/keyup, então o botão nunca fica preso no estado pressionado. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.75rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  /* Era `all 0.3s`. Passa a listar as propriedades e cai para 0.2s: `all`
+     animava cor de fundo e layout junto, e 0.3s deixava a resposta "mole"
+     para o padrão rápido do design. */
+  transition:
+    transform 0.2s var(--ease),
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+/* Foco de teclado. O site não tinha foco visível em .btn — só no card de
+   projeto. Anel dourado com offset: não altera layout nem o estado normal. */
+.btn:focus-visible {
+  outline: 2px solid var(--color-gold-soft);
+  outline-offset: 3px;
+}
+
+/* Estado normal — inalterado. */
+.btn--primary {
+  background: linear-gradient(135deg, var(--color-gold-soft), var(--color-gold));
+  color: #0a0a0a;
+  box-shadow: 0 0 0 rgba(201, 162, 75, 0);
+}
+
+/* Estado normal — inalterado. */
+.btn--secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+}
+
+/* O hover só existe onde existe ponteiro de verdade. Em toque, o :active já
+   devolve o feedback e o :hover "grudaria" após o tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn--primary:hover {
+    /* Era `0 8px 30px -6px rgba(201,162,75,0.5)` — 30px de blur a 50% de
+       opacidade é glow grande. Mesma intenção, difusão curta e mais baixa. */
+    box-shadow: 0 6px 18px -8px rgba(201, 162, 75, 0.42);
+    transform: translateY(-2px);
+  }
+
+  .btn--secondary:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold-soft);
+    background-color: rgba(201, 162, 75, 0.06);
+    transform: translateY(-2px);
+  }
+}
+
+/* Toque: sem hover, o feedback de pressionamento precisa aparecer na cor —
+   1px de deslocamento é pouco para o dedo. */
+@media (hover: none) {
+  .btn--primary:active {
+    background: linear-gradient(135deg, var(--color-gold), var(--color-gold-soft));
+  }
+
+  .btn--secondary:active {
+    border-color: var(--color-gold);
+    color: var(--color-gold-soft);
+    background-color: rgba(201, 162, 75, 0.08);
+  }
+}
+
+/* Microcompressão do clique: 1px para baixo + 0.985, com transição encurtada
+   para 90ms na entrada.
+
+   Fica DEPOIS dos blocos de hover de propósito: `.btn:active` e
+   `.btn--primary:hover` têm a mesma especificidade (0,2,0), então quem vem
+   depois no arquivo vence. Com `:active` antes do hover, o botão sob o mouse
+   ficaria sempre com a transform do hover e a compressão do clique nunca
+   apareceria. */
+.btn:active {
+  transform: translateY(1px) scale(0.985);
+  transition-duration: 90ms;
+}
+
+/* Movimento reduzido: os botões perdem deslocamento e escala, mas continuam
+   clicáveis, focáveis e navegando normalmente. Só o feedback visual muda. */
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition-duration: 0.01ms;
+  }
+
+  .btn:active,
+  .btn--primary:hover,
+  .btn--secondary:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Entrance animation ---------- */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.reveal {
+  animation: fade-in-up 0.9s var(--ease) both;
+}
+
+.reveal--delay-1 { animation-delay: 0.1s; }
+.reveal--delay-2 { animation-delay: 0.25s; }
+.reveal--delay-3 { animation-delay: 0.4s; }
+.reveal--delay-4 { animation-delay: 0.55s; }
+
+/* Movimento reduzido: a entrada continua existindo (o conteúdo precisa
+   aparecer), mas vira um simples fade de opacidade — sem deslocamento, sem
+   blur e sem cascata. É a mesma escolha já feita em Infraestrutura
+   (infra-in-reduced), agora aplicada ao reveal global do site. */
+@keyframes fade-in-reduced {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.reveal--delay-1,
+  .reveal.reveal--delay-2,
+  .reveal.reveal--delay-3,
+  .reveal.reveal--delay-4 {
+    animation-name: fade-in-reduced;
+    animation-duration: 0.3s;
+    animation-delay: 0s;
+  }
+}
+/* ---------- Split Typography ---------- */
+
+/* Título com metade preenchida e metade vazada. As duas metades fazem parte do
+   mesmo texto: ficam no fluxo normal (inline), encostadas uma na outra, sem
+   espaço entre elas. Só o preenchimento muda — a divisão é invisível. */
+.split-title {
+  display: block;
+  /* Fonte dos títulos — o mesmo font-family vale para as duas metades
+     (.split-title__outlined herda), então cheio e vazado casam perfeitamente. */
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.split-title__filled {
+  color: var(--color-text);
+}
+
+.split-title__outlined {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-text);
+  text-stroke: 1px var(--color-text);
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+/* --- Variante em teste: corte por linha diagonal --------------------------
+   Duas cópias idênticas e sobrepostas do mesmo texto (uma preenchida e uma
+   contornada), recortadas pela MESMA linha diagonal com máscaras complementares.
+   O corte é geométrico: a letra atravessada pela linha fica com uma parte
+   preenchida e outra vazada. A caixa acompanha a largura do título para que a
+   linha e o corte fiquem centrados no texto. */
+.split-title--diagonal {
+  display: block;
+  width: fit-content;
+  position: relative;
+  --cut-angle: -22deg;
+}
+
+.split-title--diagonal .split-title__filled,
+.split-title--diagonal .split-title__outlined {
+  display: block;
+}
+
+/* Um lado da linha: preenchido. */
+.split-title--diagonal .split-title__filled {
+  color: var(--color-text);
+  -webkit-mask-image: linear-gradient(var(--cut-angle), transparent 0 50%, #000 50% 100%);
+  mask-image: linear-gradient(var(--cut-angle), transparent 0 50%, #000 50% 100%);
+}
+
+/* O outro lado: só contorno, interior transparente (mesma métrica da cópia
+   preenchida — herda fonte, tamanho, peso, espaçamento e posição). */
+.split-title--diagonal .split-title__outlined {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(var(--cut-angle), #000 0 50%, transparent 50% 100%);
+  mask-image: linear-gradient(var(--cut-angle), #000 0 50%, transparent 50% 100%);
+}
+
+/* A linha da fronteira: 1px, dourada, pontas que desaparecem. Fica recortada
+   na caixa do título, então não parece uma barra atravessando o texto. */
+.split-title__line-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.split-title__line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200%;
+  height: 1px;
+  transform: translate(-50%, -50%) rotate(var(--cut-angle));
+  background: linear-gradient(
+    90deg,
+    rgba(201, 162, 75, 0) 0%,
+    rgba(201, 162, 75, 0.55) 12%,
+    rgba(230, 207, 143, 0.95) 50%,
+    rgba(201, 162, 75, 0.55) 88%,
+    rgba(201, 162, 75, 0) 100%
+  );
+  box-shadow: 0 0 10px rgba(201, 162, 75, 0.3);
+}
+
+@media (max-width: 768px) {
+  section { padding: var(--space-xl) 0; }
+
+  .split-title__outlined {
+    -webkit-text-stroke-width: 1.5px;
+    text-stroke-width: 1.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .split-title__outlined {
+    -webkit-text-stroke-width: 2px;
+    text-stroke-width: 2px;
+  }
+}

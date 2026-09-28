@@ -1,0 +1,75 @@
+.about {
+  border-top: 1px solid var(--color-border);
+  /* Ambiente editorial: plano claro no topo, luz fria à esquerda e um acento
+     quente distante à direita. Sem estrutura, sem textura. */
+  background-image:
+    radial-gradient(75% 60% at 10% -10%, rgba(246, 243, 236, 0.03), transparent 62%),
+    radial-gradient(55% 45% at 92% -4%, rgba(201, 162, 75, 0.045), transparent 66%),
+    linear-gradient(180deg, rgba(246, 243, 236, 0.022), transparent 32%);
+}
+
+.about__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--space-2xl);
+  align-items: start;
+}
+
+.about__lead {
+  font-size: var(--fs-xl);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.about__lead em {
+  font-style: normal;
+  color: var(--color-gold-soft);
+}
+
+.about__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.about__point {
+  display: flex;
+  gap: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.about__point:last-child { border-bottom: none; }
+
+.about__point-index {
+  font-size: var(--fs-sm);
+  color: var(--color-gold);
+  font-weight: 600;
+  min-width: 2rem;
+}
+
+.about__point-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.about__point-text {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 900px) {
+  .about__grid { grid-template-columns: 1fr; gap: var(--space-xl); }
+}
+
+/* Mobile: uma luz só, sem o acento distante. */
+@media (max-width: 768px) {
+  .about {
+    background-image:
+      radial-gradient(95% 60% at 22% -10%, rgba(246, 243, 236, 0.025), transparent 66%),
+      linear-gradient(180deg, rgba(246, 243, 236, 0.018), transparent 30%);
+  }
+}

@@ -1,0 +1,241 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-top: 6rem;
+  overflow: hidden;
+}
+
+/* ---------- Background ---------- */
+
+/* Fundo da Hero — a arte oficial do datacenter NEXORA é o fundo visual real da
+   seção. As camadas acima dela não redesenham a imagem: só protegem a leitura
+   do conteúdo (escurecimento central sob o texto) e dissolvem o piso na seção
+   seguinte. Sem filtro, sem blur, sem mudança de cor ou contraste na arte. */
+.hero__background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: #08080a;
+  background-image:
+    /* escurecimento central — garante contraste do título, subtítulo e botões */
+    radial-gradient(86% 66% at 50% 46%, rgba(5, 5, 8, 0.52), rgba(5, 5, 8, 0.3) 58%, transparent 80%),
+    /* sombra de piso e transição para a seção seguinte */
+    linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.28) 72%, rgba(0, 0, 0, 0.62) 100%),
+    /* arte oficial — proporção preservada, sem recorte forçado */
+    url('/hero-background.webp');
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+}
+
+.hero__background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(62% 58% at 50% 28%, black, transparent 88%);
+}
+
+/* Textura fotográfica muito discreta + feixe de luz muito difuso atravessando
+   o ambiente. O feixe não é um objeto: é luz suspensa no ar. */
+.hero__background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(180deg, rgba(246, 243, 236, 0.01) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(246, 243, 236, 0.007) 0 1px, transparent 1px 5px),
+    linear-gradient(112deg, transparent 24%, rgba(230, 207, 143, 0.05) 44%, transparent 64%);
+  -webkit-mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.42) 55%, transparent 88%);
+  mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.42) 55%, transparent 88%);
+}
+
+/* ---------- Decorations ---------- */
+
+.hero__decorations {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* luz vazando ao lado dos dois "pilares" verticais — eles passam a ser
+     arestas do ambiente, não duas linhas soltas. */
+  background-image:
+    linear-gradient(90deg, transparent 5.5%, rgba(201, 162, 75, 0.05) 8%, transparent 11.5%),
+    linear-gradient(270deg, transparent 5.5%, rgba(201, 162, 75, 0.05) 8%, transparent 11.5%);
+}
+
+.hero__decorations::before,
+.hero__decorations::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent, rgba(201, 162, 75, 0.18) 30%, rgba(201, 162, 75, 0.18) 70%, transparent);
+}
+
+.hero__decorations::before { left: 8%; }
+.hero__decorations::after { right: 8%; }
+
+/* ---------- Inner layout ---------- */
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-xl);
+}
+
+.hero__content {
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold-soft);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  background: rgba(201, 162, 75, 0.05);
+}
+
+.hero__title {
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.hero__title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--color-gold-soft), var(--color-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__subtitle {
+  font-size: var(--fs-lg);
+  color: var(--color-text-muted);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---------- Visual: layered stack (hardware -> app) ----------
+   As 4 peças são a navegação principal (ver HeroVisual.jsx). O bloco abaixo
+   é o visual ORIGINAL delas, inalterado: só ganhou o foco de teclado, que
+   não existia enquanto eram <div> não-focáveis. */
+
+.hero__visual {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: var(--space-lg) 0;
+}
+
+.hero__layer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  backdrop-filter: blur(6px);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  transition: border-color 0.4s var(--ease), transform 0.4s var(--ease), background 0.4s var(--ease);
+  /* A peça virou link: sem isto o cursor ficaria com a seta padrão, sinalizando
+     que não há nada clicável. */
+  cursor: pointer;
+}
+
+/* Foco de teclado. Antes estas peças eram <div> e não tinham foco; agora são
+   links e precisam de anel visível. Mesmo dourado e mesmo offset usados em
+   .btn e .project-reveal__head — não move o layout e só aparece na navegação
+   por teclado. */
+.hero__layer:focus-visible {
+  outline: 2px solid var(--color-gold-soft);
+  outline-offset: 3px;
+}
+
+.hero__layer span:last-child {
+  font-size: var(--fs-xs);
+  color: var(--color-text-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero__layer:hover {
+  border-color: var(--color-gold-dim);
+  background: linear-gradient(180deg, rgba(201,162,75,0.06), rgba(255,255,255,0.01));
+  transform: translateX(4px);
+}
+
+.hero__connector {
+  align-self: center;
+  width: 1px;
+  height: 14px;
+  background: var(--color-border-strong);
+}
+
+@media (max-width: 768px) {
+  .hero { padding-top: 5.5rem; }
+  .hero__decorations::before,
+  .hero__decorations::after { display: none; }
+}
+
+/* Mobile: a arte continua presente e legível. A caixa da Hero é muito mais
+   alta que larga (conteúdo empilhado), então `cover` cortaria ~75% da largura
+   da arte e sobraria só o símbolo. Aqui a imagem entra pela largura INTEIRA
+   (zero corte horizontal, composição preservada) e ancorada no topo, sob o
+   título; o restante da caixa recebe a cor base e o degradê, que já existiam. */
+@media (max-width: 768px) {
+  .hero__background {
+    background-image:
+      radial-gradient(120% 30% at 50% 22%, rgba(5, 5, 8, 0.5), rgba(5, 5, 8, 0.28) 62%, transparent 88%),
+      linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.5) 58%, rgba(0, 0, 0, 0.82) 100%),
+      url('/hero-background.webp');
+    background-size: cover, cover, 100% auto;
+    background-position: center, center, center 6%;
+    background-repeat: no-repeat;
+  }
+
+  .hero__background::after { display: none; }
+  .hero__decorations { background-image: none; }
+}

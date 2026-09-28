@@ -1,0 +1,152 @@
+/* ==========================================================================
+   NexoraIntro — Abertura Cinematográfica Nexora
+   1. Tela escura
+   2. Linhas externas convergem em cascata durante TODA a formação e desenham
+      o N progressivamente; a aura e o preenchimento dourado crescem POR BAIXO
+      dos traços (máscara radial) — os traços se transformam no N dourado,
+      sem corte e sem flash abrupto
+   3. N completo estacionado no centro
+   4. Rotação 3D suave sobre seu próprio eixo
+   5. Redução de escala + deslocamento até a logo de marca
+   6. Entrada progressiva do site
+   7. Encaixe perfeito, intro removida
+   ========================================================================== */
+
+.nexora-intro-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 1. Backdrop escuro cobrindo o site */
+.nexora-intro-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-bg, #08080a);
+  background-image:
+    radial-gradient(90% 70% at 50% 50%, rgba(201, 162, 75, 0.05), transparent 75%),
+    linear-gradient(180deg, #09090c 0%, #08080a 50%, #050507 100%);
+  pointer-events: auto;
+  opacity: 1;
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nexora-intro-wrapper--fade-backdrop .nexora-intro-backdrop {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 2. Container central que abriga a animação das linhas */
+.nexora-intro-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Linhas de feixes convergentes de fora para dentro */
+.nexora-intro-beams {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.nexora-intro-beam {
+  stroke-dasharray: 1800;
+  stroke-dashoffset: 1800;
+  animation: nexora-beam-in 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes nexora-beam-in {
+  0% {
+    stroke-dashoffset: 1800;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* Camada dos traços de contorno — permanece visível durante toda a formação e
+   some suavemente por cima do N completo e idêntico (2.0 → 2.3s, via rAF) */
+.nexora-intro-contours {
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Traços de contorno do N que se desenham progressivamente */
+.nexora-contour-path {
+  fill: none;
+  stroke: #e6cf8f;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* pathLength=1 normaliza o caminho: dasharray/dashoffset unitários funcionam
+     para QUALQUER comprimento — o traço desenha do início ao fim sem estourar
+     o dasharray, com velocidade de caneta proporcional ao comprimento */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 8px rgba(201, 162, 75, 0.95));
+  /* duração e delay são definidos inline por caminho (stagger proporcional à
+     cumLen: traços novos surgem continuamente até ~1.95s) */
+}
+
+@keyframes nexora-draw-contour {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* 3. O elemento N oficial que se materializa e viaja */
+.nexora-intro-hero-symbol {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: center center;
+  pointer-events: none;
+  z-index: 100000;
+  will-change: transform, opacity;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nexora-intro-hero-symbol__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 25px rgba(201, 162, 75, 0.6));
+}
+
+/* Aura de luz do N no centro */
+.nexora-intro-hero-symbol__glow {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(201, 162, 75, 0.45) 0%, rgba(230, 207, 143, 0.1) 50%, transparent 70%);
+  filter: blur(25px);
+  pointer-events: none;
+}

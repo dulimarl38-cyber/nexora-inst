@@ -1,0 +1,181 @@
+.contact {
+  border-top: 1px solid var(--color-border);
+  /* Encerramento cinematográfico: luz quente subindo da base, vinheta fechando
+     as laterais e sombra no topo. */
+  background-image:
+    radial-gradient(110% 80% at 50% 128%, rgba(201, 162, 75, 0.11), transparent 62%),
+    radial-gradient(60% 50% at 84% 108%, rgba(230, 207, 143, 0.05), transparent 66%),
+    radial-gradient(130% 120% at 50% 30%, transparent 45%, rgba(0, 0, 0, 0.4) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 30%);
+}
+
+/* Grade editorial: os dois canais de ação lado a lado e o atendimento ocupando a
+   linha inteira. Sem formulário — a seção é só o canal direto. */
+.contact__info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+  /* <address> vem em itálico do user-agent; aqui os valores são rótulo + canal,
+     não texto corrido. */
+  font-style: normal;
+}
+
+.contact__info-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  border: 1px solid var(--color-border);
+  /* Filete dourado à esquerda: o mesmo acento que marcava os itens antigos. */
+  border-left: 2px solid var(--color-gold-dim);
+  border-radius: var(--radius-sm);
+  transition:
+    border-color 0.25s var(--ease),
+    background-color 0.25s var(--ease),
+    /* `translate` e nao `transform`: a animacao .reveal termina em
+       `transform: translateY(0)` com fill-mode `both`, e um transform de
+       animacao ganha de qualquer declaracao normal — o hover nunca apareceria.
+       As propriedades individuais compoem antes do `transform`, entao aqui
+       elas valem. */
+    translate 0.25s var(--ease);
+}
+
+.contact__info-label {
+  display: block;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+}
+
+/* O <a> preenche a caixa toda do item: o alvo de toque cobre a linha inteira e
+   não só o texto do valor. */
+.contact__link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact__link-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-text);
+  /* O e-mail é uma sequência única sem espaços: sem isto ele estouraria a
+     coluna nas telas estreitas em vez de quebrar. */
+  overflow-wrap: anywhere;
+  transition: color 0.25s var(--ease);
+}
+
+.contact__link-hint {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  transition: color 0.25s var(--ease);
+}
+
+/* Foco de teclado: mesmo anel dourado usado nos botões e nas peças da Hero.
+   Só aparece na navegação por teclado e não move o layout. */
+.contact__link:focus-visible {
+  outline: 2px solid var(--color-gold-soft);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Seta de destino, no canto do item — só nos canais clicáveis. */
+.contact__info-item--link::after {
+  content: '→';
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-lg);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  line-height: 1;
+  color: var(--color-gold-dim);
+  transition:
+    transform 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+/* O hover só existe onde existe ponteiro de verdade. Em toque, o :active já
+   devolve o feedback e o :hover "grudaria" após o tap. */
+@media (hover: hover) and (pointer: fine) {
+  .contact__info-item--link:hover {
+    border-color: var(--color-border-strong);
+    border-left-color: var(--color-gold);
+    background: linear-gradient(180deg, rgba(201, 162, 75, 0.07), rgba(201, 162, 75, 0.015));
+    translate: 0 -2px;
+  }
+
+  .contact__info-item--link:hover .contact__link-value,
+  .contact__info-item--link:hover .contact__link-hint {
+    color: var(--color-gold-soft);
+  }
+
+  .contact__info-item--link:hover::after {
+    transform: translateX(4px);
+    color: var(--color-gold-soft);
+  }
+}
+
+/* Toque: sem hover, o feedback de pressionamento aparece na cor — 2px de
+   deslocamento é pouco para o dedo. */
+@media (hover: none) {
+  .contact__info-item--link:active {
+    border-color: var(--color-border-strong);
+    border-left-color: var(--color-gold);
+    background: linear-gradient(180deg, rgba(201, 162, 75, 0.09), rgba(201, 162, 75, 0.02));
+  }
+
+  .contact__info-item--link:active .contact__link-value,
+  .contact__info-item--link:active .contact__link-hint,
+  .contact__info-item--link:active::after {
+    color: var(--color-gold-soft);
+  }
+}
+
+/* Movimento reduzido: os canais perdem deslocamento e cor, mas continuam
+   clicáveis, focáveis e navegando normalmente. Só o feedback visual muda. */
+@media (prefers-reduced-motion: reduce) {
+  .contact__info-item,
+  .contact__info-item--link::after,
+  .contact__link-value,
+  .contact__link-hint {
+    transition-duration: 0.01ms;
+  }
+
+  .contact__info-item--link:hover,
+  .contact__info-item--link:hover::after {
+    translate: none;
+  }
+  .contact__info-item--link:hover::after {
+    transform: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .contact__info { grid-template-columns: 1fr; gap: var(--space-sm); }
+}
+
+/* Mobile: mantém a luz de encerramento, sem a vinheta. */
+@media (max-width: 768px) {
+  .contact {
+    background-image:
+      radial-gradient(130% 70% at 50% 122%, rgba(201, 162, 75, 0.09), transparent 66%);
+  }
+}
+
+@media (max-width: 480px) {
+  .contact__info-item { padding: var(--space-md); }
+  .contact__link-value { font-size: var(--fs-md); }
+  .contact__info-item--link::after { right: var(--space-md); }
+}

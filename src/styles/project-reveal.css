@@ -1,0 +1,280 @@
+/* ProjectReveal — interação editorial de cada projeto (fundação).
+   CLOSED → proximidade → PREVIEW visual → EXPANDED (mesmo elemento).
+   Só transform/opacity/clip-path + transições CSS. Sem libs, sem canvas,
+   sem bounce/glow/partículas. Tokens existentes apenas. */
+
+.project-reveal {
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---------- CLOSED: linha editorial limpa ---------- */
+
+.project-reveal__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  width: 100%;
+  padding: var(--space-lg) var(--space-sm);
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.4s var(--ease);
+}
+
+.project-reveal__head:hover {
+  background-color: rgba(246, 243, 236, 0.015);
+}
+
+.project-reveal__head:focus-visible {
+  outline: 1px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+.project-reveal__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.project-reveal__category {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+}
+
+.project-reveal__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  transform: translateX(0);
+  transition: transform 0.45s var(--ease);
+}
+
+.project-reveal__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  opacity: 0.55;
+  transition: opacity 0.4s var(--ease);
+}
+
+.project-reveal__hint-label {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+}
+
+.project-reveal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  transform: rotate(0deg);
+  transition:
+    transform 0.5s var(--ease),
+    border-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+/* ---------- PROXIMITY: dica sutil antes da abertura ---------- */
+
+.project-reveal[data-state='proximity'] .project-reveal__name {
+  transform: translateX(8px);
+}
+
+.project-reveal[data-state='proximity'] .project-reveal__hint {
+  opacity: 1;
+}
+
+.project-reveal[data-state='proximity'] .project-reveal__icon {
+  border-color: var(--color-gold-dim);
+  color: var(--color-gold-soft);
+}
+/* ---------- PREVIEW / EXPANDED: mesma área continua abrindo ---------- */
+
+.project-reveal__viewport {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-10px);
+  clip-path: inset(0 0 100% 0);
+  transition:
+    grid-template-rows 0.7s var(--ease),
+    opacity 0.5s ease,
+    clip-path 0.7s var(--ease),
+    transform 0.7s var(--ease);
+}
+
+.project-reveal[data-state='preview'] .project-reveal__viewport,
+.project-reveal[data-state='expanded'] .project-reveal__viewport {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+  clip-path: inset(0 0 0% 0);
+}
+
+.project-reveal__viewport-inner {
+  overflow: hidden;
+  min-height: 0;
+  padding: 0 var(--space-sm);
+}
+
+/* Área visual preparada para project.image. Sem imagem: plana, sem
+   gradiente substituto, sem conteúdo inventado. */
+.project-reveal__media {
+  overflow: hidden;
+  height: 0;
+  border: 0 solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-alt);
+  transition:
+    height 0.7s var(--ease),
+    border-color 0.5s ease;
+}
+
+.project-reveal[data-state='preview'] .project-reveal__media {
+  height: clamp(180px, 24vw, 260px);
+  border-width: 1px;
+  border-color: var(--color-border);
+}
+
+.project-reveal[data-state='expanded'] .project-reveal__media {
+  height: min(58vh, 480px);
+  border-width: 1px;
+  border-color: var(--color-border);
+}
+
+.project-reveal__media-empty {
+  width: 100%;
+  height: 100%;
+}
+
+.project-reveal__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 0.6s ease,
+    transform 0.9s var(--ease);
+}
+
+.project-reveal[data-state='preview'] .project-reveal__img,
+.project-reveal[data-state='expanded'] .project-reveal__img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Descrição (dado real futuro) só aparece no estado expandido. */
+.project-reveal__description {
+  max-width: 60ch;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  transform: translateY(6px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s var(--ease),
+    max-height 0.6s var(--ease),
+    padding 0.6s var(--ease);
+}
+
+.project-reveal[data-state='expanded'] .project-reveal__description {
+  max-height: 12rem;
+  opacity: 1;
+  transform: translateY(0);
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-lg);
+}
+
+.project-reveal[data-state='preview'] .project-reveal__hint,
+.project-reveal[data-state='expanded'] .project-reveal__hint {
+  opacity: 1;
+}
+
+.project-reveal[data-state='preview'] .project-reveal__icon {
+  border-color: var(--color-gold-dim);
+  color: var(--color-gold-soft);
+}
+
+/* Expandido: "+" gira 45° (vira × de recolher) — contínuo, sem bounce. */
+.project-reveal[data-state='expanded'] .project-reveal__icon {
+  transform: rotate(45deg);
+  border-color: var(--color-gold-dim);
+  color: var(--color-gold-soft);
+}
+
+/* ---------- Mobile: toques sem hover, áreas ajustadas ---------- */
+
+@media (max-width: 768px) {
+  .project-reveal__head {
+    padding: var(--space-md) var(--space-xs);
+  }
+
+  .project-reveal__hint-label {
+    display: none;
+  }
+
+  .project-reveal__viewport-inner {
+    padding: 0 var(--space-xs);
+  }
+
+  .project-reveal[data-state='preview'] .project-reveal__media {
+    height: 180px;
+  }
+
+  .project-reveal[data-state='expanded'] .project-reveal__media {
+    height: min(46vh, 320px);
+  }
+}
+
+/* ---------- Acessibilidade: reduz movimento sem quebrar estados ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .project-reveal__head,
+  .project-reveal__name,
+  .project-reveal__hint,
+  .project-reveal__icon,
+  .project-reveal__viewport,
+  .project-reveal__media,
+  .project-reveal__img,
+  .project-reveal__description {
+    transition-duration: 0.01ms;
+  }
+
+  .project-reveal__viewport {
+    transform: none;
+    clip-path: none;
+  }
+
+  .project-reveal__img {
+    transform: none;
+  }
+
+  .project-reveal__description {
+    transform: none;
+  }
+
+  .project-reveal[data-state='proximity'] .project-reveal__name {
+    transform: none;
+  }
+}

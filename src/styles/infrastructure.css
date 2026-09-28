@@ -1,0 +1,198 @@
+.infrastructure {
+  /* ---------- O relógio da seção ----------
+     Toda animação abaixo lê estes valores. É o que garante que nada tenha
+     duração, curva ou ritmo próprios: a diferença entre dois elementos é
+     sempre só a fase, nunca a intensidade ou a trajetória.
+
+     0.9s com cubic-bezier(0.16, 1, 0.3, 1) é exatamente o `fade-in-up` do
+     .reveal global — a animação mais bem resolvida do site, usada aqui como
+     referência de comportamento. */
+  --inf-dur: 0.9s;
+  --inf-ease: var(--ease);
+  --inf-base: 0.15s;   /* espera após o título, antes da corrente começar */
+  --inf-step: 0.05s;   /* distância de fase entre duas peças vizinhas */
+  /* Loop dos estratos. Curva própria (suave nas pontas) porque um movimento
+     contínuo não pode ter a arrancada do ease-out da entrada. */
+  --inf-loop: 5.4s;
+  --inf-loop-ease: cubic-bezier(0.5, 0, 0.5, 1);
+
+  background: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  /* Luz quente subindo da base. Os estratos saíram daqui: antes eram três
+     linhas fixas com opacidades em escada (0.025 / 0.02 / 0.016), quase
+     invisíveis e todas diferentes. Agora são elementos, com intensidade
+     igual e movimento próprio. */
+  background-image:
+    radial-gradient(85% 55% at 50% 112%, rgba(201, 162, 75, 0.07), transparent 62%),
+    linear-gradient(0deg, rgba(201, 162, 75, 0.045), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 26%);
+}
+
+/* ---------- Estratos: a corrente contínua ---------- */
+
+.infrastructure__strata {
+  position: absolute;
+  inset: 0;
+  /* A varredura passa da borda durante o ciclo; nada é cortado. */
+  overflow: hidden;
+  pointer-events: none;
+  /* Some nas laterais: a linha entra e sai em vez de terminar a seco. */
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.infrastructure__stratum {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  /* Opacidade igual nos três, e baixa de propósito. A trilha é a estrutura que
+     fica parada; quem tem presença é a banda que passa. Com a trilha mais forte
+     a linha cruzava o texto e lia como risco, não como estrato. */
+  background: rgba(246, 243, 236, 0.03);
+}
+
+/* A banda de luz que percorre a linha. Mesma duração e mesma curva nas três:
+   só a fase muda, em terços exatos do ciclo. Assim os três estratos não são
+   três animações parecidas, e sim uma onda só subindo pelas camadas. */
+.infrastructure__stratum::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  /* Faixa estreita: passa rápido pelo texto em vez de involve-lo. */
+  width: 16%;
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 75, 0.55), transparent);
+  animation: infra-sweep var(--inf-loop) var(--inf-loop-ease) infinite;
+}
+
+.infrastructure__stratum:nth-child(1)::after { animation-delay: 0s; }
+.infrastructure__stratum:nth-child(2)::after { animation-delay: calc(var(--inf-loop) / -3); }
+.infrastructure__stratum:nth-child(3)::after { animation-delay: calc(var(--inf-loop) / -3 * 2); }
+
+@keyframes infra-sweep {
+  from { transform: translateX(-100%); }
+  /* A banda tem 16% da trilha. Para sair de fora à esquerda (-100% da própria
+     largura) e sair de fora à direita, ela precisa andar 100% + 16% da trilha,
+     ou seja 625% da própria largura. Se a largura mudar, este número muda. */
+  to   { transform: translateX(625%); }
+}
+
+/* ---------- Corrente de entrada ---------- */
+
+/* Um único keyframe para nós, setas e parágrafos: mesma trajetória (subir),
+   mesma distância (14px), mesmo desfoque e mesma curva. A seta não é mais fraca
+   que o nó nem mais rápida — ela só entra um passo depois, por leitura. */
+@keyframes infra-in {
+  from { opacity: 0; filter: blur(6px); translate: 0 14px; }
+  to   { opacity: 1; filter: blur(0); translate: 0 0; }
+}
+
+/* Versão para movimento reduzido: sai o deslocamento e o desfoque, fica a
+   aparição. */
+@keyframes infra-in-reduced {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.infrastructure__chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: var(--space-xl);
+}
+
+.infrastructure__node,
+.infrastructure__arrow,
+.infrastructure__body p {
+  animation: infra-in var(--inf-dur) var(--inf-ease) both;
+  animation-delay: calc(var(--inf-base) + var(--i, 0) * var(--inf-step));
+}
+
+.infrastructure__node {
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  background: rgba(255,255,255,0.02);
+}
+
+.infrastructure__node--accent {
+  border-color: var(--color-gold);
+  color: var(--color-gold-soft);
+  background: rgba(201, 162, 75, 0.08);
+}
+
+.infrastructure__arrow {
+  color: var(--color-text-faint);
+  line-height: 1;
+}
+
+/* Texto corrido em duas colunas, para o texto novo respirar sem virar uma
+   parede de texto único. */
+.infrastructure__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.infrastructure__body p {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--color-text-muted);
+  font-size: var(--fs-md);
+  line-height: 1.75;
+}
+
+@media (max-width: 900px) {
+  .infrastructure__body { grid-template-columns: 1fr; gap: var(--space-md); }
+}
+
+/* Mobile: a corrente vira pilha. Deixada em linha, a quebra de layout colocava
+   uma seta sozinha no começo da linha seguinte — uma seta apontando para
+   nada. Em coluna a seta gira para baixo e a leitura continua de cima para
+   baixo. */
+@media (max-width: 600px) {
+  .infrastructure__chain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .infrastructure__arrow { transform: rotate(90deg); }
+}
+
+/* Movimento reduzido: a seção continua legível e inteira, só deixa de se
+   mover. Os estratos param de varrer, mas as linhas ficam no lugar — a
+   informação visual não some. */
+@media (prefers-reduced-motion: reduce) {
+  .infrastructure__node,
+  .infrastructure__arrow,
+  .infrastructure__body p {
+    animation-name: infra-in-reduced;
+    /* Sem cascata: tudo aparece junto, sem sequenciar a entrada. */
+    animation-delay: 0s;
+  }
+
+  /* A banda some inteira. Só desligar a animação deixaria ela parada no
+     começo do percurso, com um brilho dourado fixo na borda esquerda — um
+     resíduo visual que não existia antes. A trilha do estrato continua lá. */
+  .infrastructure__stratum::after { animation: none; display: none; }
+}
+
+/* Mobile: mantém a luz que sobe da base. Os estratos continuam — são a única
+   animação contínua da seção e funcionam bem em tela estreita, já que a
+   amplitude é um deslocamento de 1px, não um tamanho. */
+@media (max-width: 768px) {
+  .infrastructure {
+    background-image:
+      radial-gradient(110% 55% at 50% 112%, rgba(201, 162, 75, 0.06), transparent 66%);
+  }
+}
+

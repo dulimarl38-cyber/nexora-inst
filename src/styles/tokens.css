@@ -1,0 +1,58 @@
+:root {
+  /* Cores — identidade Nexora */
+  --color-bg: #08080a;
+  --color-bg-alt: #0f0f12;
+  --color-bg-elevated: #161619;
+  --color-border: #26262b;
+  --color-border-strong: #35352f;
+
+  --color-gold: #c9a24b;
+  --color-gold-soft: #e6cf8f;
+  --color-gold-dim: #7a6530;
+
+  --color-text: #f6f3ec;
+  --color-text-muted: #9c9894;
+  /* Texto secundário de baixo peso (rótulos, numerações, dicas).
+     Calibrado para 4.8:1 sobre --color-bg e 4.6:1 sobre --color-bg-alt:
+     o menor valor que ainda cumpre WCAG 2.1 AA (4.5:1) mantendo o tom
+     cinza-quente original. O valor anterior (#656260) dava 3.3:1 e
+     reprovava em texto normal. */
+  --color-text-faint: #7f7c79;
+
+  /* Tipografia */
+  --font-base: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Fonte dos títulos (display): grotesca contemporânea, usada apenas nos títulos.
+     O texto corrido/UI continua em Inter (--font-base). */
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.9375rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  --fs-2xl: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  --fs-3xl: clamp(2.75rem, 1.6rem + 4.5vw, 5.25rem);
+
+  /* Espaçamento */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --space-3xl: 9rem;
+
+  /* Layout */
+  --container-max: 1200px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Breakpoints (referência) */
+  --bp-mobile: 480px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+  --bp-wide: 1440px;
+}
