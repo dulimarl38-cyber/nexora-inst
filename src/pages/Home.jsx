@@ -14,19 +14,20 @@ export default function Home() {
   return (
     <>
       <NexoraIntro />
-      <Brand />
-      <main>
-        <Hero />
-        <About />
-        <Solutions />
-        <Projects />
-        <Process />
-        <Infrastructure />
-        <Technologies />
-        <Contact />
-      </main>
-      <Footer />
+      <div id="site-content">
+        <Brand />
+        <main>
+          <Hero />
+          <About />
+          <Solutions />
+          <Projects />
+          <Process />
+          <Infrastructure />
+          <Technologies />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </>
   )
 }
-

@@ -20,7 +20,31 @@ export default function NexoraIntro({ onComplete }) {
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow
+    const siteContent = document.getElementById('site-content')
+    const originalAriaHidden = siteContent?.getAttribute('aria-hidden')
+    if (siteContent) {
+      siteContent.inert = true
+      siteContent.setAttribute('aria-hidden', 'true')
+      if (siteContent.contains(document.activeElement)) {
+        document.activeElement.blur()
+      }
+    }
     document.body.style.overflow = 'hidden'
+
+    const reducedMotion =
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion) {
+      setComplete(true)
+      document.body.style.overflow = originalOverflow
+      if (siteContent) {
+        siteContent.inert = false
+        if (originalAriaHidden === null) siteContent.removeAttribute('aria-hidden')
+        else siteContent.setAttribute('aria-hidden', originalAriaHidden)
+      }
+      onCompleteRef.current?.()
+      return undefined
+    }
 
     const startTime = performance.now()
     let backdropFaded = false
@@ -178,6 +202,11 @@ export default function NexoraIntro({ onComplete }) {
       } else {
         setComplete(true)
         document.body.style.overflow = originalOverflow
+        if (siteContent) {
+          siteContent.inert = false
+          if (originalAriaHidden === null) siteContent.removeAttribute('aria-hidden')
+          else siteContent.setAttribute('aria-hidden', originalAriaHidden)
+        }
         if (onCompleteRef.current) onCompleteRef.current()
       }
     }
@@ -188,6 +217,11 @@ export default function NexoraIntro({ onComplete }) {
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
       document.body.style.overflow = originalOverflow
+      if (siteContent) {
+        siteContent.inert = false
+        if (originalAriaHidden === null) siteContent.removeAttribute('aria-hidden')
+        else siteContent.setAttribute('aria-hidden', originalAriaHidden)
+      }
     }
   }, [])
 

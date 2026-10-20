@@ -150,3 +150,14 @@
   filter: blur(25px);
   pointer-events: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .nexora-intro-backdrop {
+    transition: none;
+  }
+
+  .nexora-intro-beam,
+  .nexora-contour-path {
+    animation: none;
+  }
+}

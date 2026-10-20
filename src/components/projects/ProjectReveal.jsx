@@ -15,8 +15,7 @@ import { useEffect, useId, useRef, useState } from 'react'
  * - proximity: dica sutil de aproximação (desktop, com pequeno atraso —
  *   não é mouseenter instantâneo).
  * - preview: área visual parcialmente aberta com project.image.
- * - expanded: a MESMA área continua a expansão e, ao final, abre `link`
- *   em nova aba (window.open _blank noopener,noreferrer) após a animação.
+ * - expanded: a MESMA área continua a expansão e exibe uma âncora para `link`.
  *   Sem `link`, apenas expande.
  *
  * Mobile (hover:none): sem hover — 1º toque abre preview, 2º expande.
@@ -30,7 +29,6 @@ export default function ProjectReveal({ project = {} }) {
   const panelId = useId()
   const hoverRef = useRef(false)
   const timerRef = useRef(null)
-  const navTimerRef = useRef(null)
 
   const isOpen = state === 'preview' || state === 'expanded'
 
@@ -47,11 +45,10 @@ export default function ProjectReveal({ project = {} }) {
     }
   }, [])
 
-  // Limpa os timers ao desmontar.
+  // Limpa o timer de proximidade ao desmontar.
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
-      if (navTimerRef.current) clearTimeout(navTimerRef.current)
     }
   }, [])
 
@@ -62,43 +59,17 @@ export default function ProjectReveal({ project = {} }) {
     }
   }
 
-  const clearNavTimer = () => {
-    if (navTimerRef.current) {
-      clearTimeout(navTimerRef.current)
-      navTimerRef.current = null
-    }
-  }
-
-  // Abre o link real somente após a expansão terminar (portfólio preservado).
-  const openAfterExpand = () => {
-    if (!link) return
-    clearNavTimer()
-    const reduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    navTimerRef.current = setTimeout(
-      () => {
-        window.open(link, '_blank', 'noopener,noreferrer')
-      },
-      reduced ? 60 : 750,
-    )
-  }
-
   // Avança a máquina de estados (clique / Enter / Espaço / toque).
   const advance = () => {
     if (state === 'closed' || state === 'proximity') {
-      clearNavTimer()
       setState('preview')
       return
     }
     if (state === 'preview') {
       setState('expanded')
-      openAfterExpand()
       return
     }
     // expanded → recolhe para preview; cancela navegação ainda pendente.
-    clearNavTimer()
     setState('preview')
   }
 
@@ -142,7 +113,6 @@ export default function ProjectReveal({ project = {} }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       clearTimer()
-      clearNavTimer()
       setState((prev) => {
         if (prev === 'expanded') return 'preview'
         if (prev === 'preview' || prev === 'proximity') return 'closed'
@@ -207,6 +177,16 @@ export default function ProjectReveal({ project = {} }) {
             <p className="project-reveal__description" aria-hidden={state !== 'expanded'}>
               {description}
             </p>
+          )}
+          {link && state === 'expanded' && (
+            <a
+              className="project-reveal__link"
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Visitar projeto
+            </a>
           )}
         </div>
       </div>
